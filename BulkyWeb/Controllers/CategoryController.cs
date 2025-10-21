@@ -1,20 +1,27 @@
 using BulkyWeb.Data;
+using BulkyWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyWeb.Controllers;
 
-public class CategoryController : Controller
+public class CategoryController(ApplicationDbContext db) : Controller
 {
-    private readonly ApplicationDbContext _db;
-
-    public CategoryController(ApplicationDbContext db)
-    {
-        _db = db;
-    }
-
     public IActionResult Index()
     {
-        var objCategories = _db.Categories.ToList();
+        var objCategories = db.Categories.ToList();
         return View(objCategories);
+    }
+
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Create(Category obj)
+    {
+        db.Categories.Add(obj);
+        db.SaveChanges();
+        return RedirectToAction("Index");
     }
 }
