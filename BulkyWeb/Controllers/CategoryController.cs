@@ -20,6 +20,10 @@ public class CategoryController(ApplicationDbContext db) : Controller
     [HttpPost]
     public IActionResult Create(Category obj)
     {
+        if (obj.Name == obj.DisplayOrder.ToString())
+        {
+            ModelState.AddModelError("name","The Display Order cannot exactly match the Category Name");
+        }
         if (ModelState.IsValid)
         {
             db.Categories.Add(obj);
