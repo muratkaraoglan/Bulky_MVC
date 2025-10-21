@@ -22,14 +22,49 @@ public class CategoryController(ApplicationDbContext db) : Controller
     {
         if (obj.Name == obj.DisplayOrder.ToString())
         {
-            ModelState.AddModelError("name","The Display Order cannot exactly match the Category Name");
+            ModelState.AddModelError("name", "The Display Order cannot exactly match the Category Name");
         }
-        if (ModelState.IsValid)
-        {
-            db.Categories.Add(obj);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-        return View();
+
+        if (!ModelState.IsValid) return View();
+        db.Categories.Add(obj);
+        db.SaveChanges();
+        return RedirectToAction("Index");
+    }
+
+    public IActionResult Edit(int? id)
+    {
+        if (id is null or 0) return NotFound();
+        var categoryFromDb = db.Categories.Find(id);
+        if (categoryFromDb is null) return NotFound();
+        
+        return View(categoryFromDb);
+    }
+    
+    [HttpPost]
+    public IActionResult Edit(Category obj)
+    {
+        if (!ModelState.IsValid) return View();
+        db.Categories.Update(obj);
+        db.SaveChanges();
+        return RedirectToAction("Index");
+    }
+    
+    public IActionResult Delete(int? id)
+    {
+        if (id is null or 0) return NotFound();
+        var categoryFromDb = db.Categories.Find(id);
+        if (categoryFromDb is null) return NotFound();
+        
+        return View(categoryFromDb);
+    }
+    
+    [HttpPost,ActionName("Delete")]
+    public IActionResult DeletePost(int? id)
+    {
+        var categoryFromDb = db.Categories.Find(id);
+        if (categoryFromDb is null ) return NotFound();
+        db.Categories.Remove(categoryFromDb);
+        db.SaveChanges();
+        return RedirectToAction("Index");
     }
 }
