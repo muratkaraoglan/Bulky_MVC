@@ -28,6 +28,7 @@ public class CategoryController(ApplicationDbContext db) : Controller
         if (!ModelState.IsValid) return View();
         db.Categories.Add(obj);
         db.SaveChanges();
+        TempData["success"] = "Category created successfully";
         return RedirectToAction("Index");
     }
 
@@ -46,6 +47,7 @@ public class CategoryController(ApplicationDbContext db) : Controller
         if (!ModelState.IsValid) return View();
         db.Categories.Update(obj);
         db.SaveChanges();
+        TempData["success"] = "Category edited successfully";
         return RedirectToAction("Index");
     }
     
@@ -65,6 +67,7 @@ public class CategoryController(ApplicationDbContext db) : Controller
         if (categoryFromDb is null ) return NotFound();
         db.Categories.Remove(categoryFromDb);
         db.SaveChanges();
+        TempData["success"] = "Category deleted successfully";
         return RedirectToAction("Index");
     }
 }
