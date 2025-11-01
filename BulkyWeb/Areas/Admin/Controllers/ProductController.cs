@@ -19,11 +19,10 @@ public class ProductController : Controller
         _webHostEnvironment = webHostEnvironment;
     }
 
-    // GET
     public IActionResult Index()
     {
         var products = _unitOfWork.Product
-            .GetAll()
+            .GetAll(includeProperties: "Category")
             .ToList();
         return View(products);
     }
