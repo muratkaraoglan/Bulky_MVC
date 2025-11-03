@@ -2,12 +2,15 @@ using System.Text;
 using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
 using Bulky.Models.ViewModels;
+using Bulky.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BulkyWeb.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = SD.Role_Admin)]
 public class ProductController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -108,9 +111,10 @@ public class ProductController : Controller
         {
             return Json(new { success = false, message = "Error while deleting" });
         }
+
         var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImageUrl.TrimStart('\\'));
         if (System.IO.File.Exists(oldImagePath)) System.IO.File.Delete(oldImagePath);
-        
+
         _unitOfWork.Product.Remove(product);
         _unitOfWork.Save();
         return Json(new { success = true, message = "Delete Successful" });

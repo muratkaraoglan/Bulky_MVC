@@ -1,9 +1,13 @@
 using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
+using Bulky.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyWeb.Areas.Admin.Controllers;
+
 [Area("Admin")]
+[Authorize(Roles = SD.Role_Admin)]
 public class CategoryController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -42,7 +46,7 @@ public class CategoryController : Controller
     public IActionResult Edit(int? id)
     {
         if (id is null or 0) return NotFound();
-        var categoryFromDb =  _unitOfWork.Category.Get(c => c.Id == id);
+        var categoryFromDb = _unitOfWork.Category.Get(c => c.Id == id);
         if (categoryFromDb is null) return NotFound();
 
         return View(categoryFromDb);
@@ -61,7 +65,7 @@ public class CategoryController : Controller
     public IActionResult Delete(int? id)
     {
         if (id is null or 0) return NotFound();
-        var categoryFromDb =  _unitOfWork.Category.Get(c => c.Id == id);
+        var categoryFromDb = _unitOfWork.Category.Get(c => c.Id == id);
         if (categoryFromDb is null) return NotFound();
 
         return View(categoryFromDb);
@@ -70,7 +74,7 @@ public class CategoryController : Controller
     [HttpPost, ActionName("Delete")]
     public IActionResult DeletePost(int? id)
     {
-        var categoryFromDb =  _unitOfWork.Category.Get(c => c.Id == id);
+        var categoryFromDb = _unitOfWork.Category.Get(c => c.Id == id);
         if (categoryFromDb is null) return NotFound();
         _unitOfWork.Category.Remove(categoryFromDb);
         _unitOfWork.Save();
